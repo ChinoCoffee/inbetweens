@@ -52,7 +52,7 @@ def procrustes_analyze(splines):
     gpa.solve()
 
     normalized_splines = gpa.getNormalizedSpline()
-    print(normalized_splines.shape, normalized_splines)
+    print(normalized_splines.shape)
 
     result = np.array([RotoppPoint.rotopp2coords(coords) for coords in normalized_splines])
 

@@ -35,7 +35,7 @@ def calculate_manifold(data):
     input_dim = 2   # How many latent dimensions to use
 
     kernel = GPy.kern.RBF(input_dim)
-    model = GPy.models.BayesianGPLVM(X, input_dim, kernel=kernel, num_inducing=6)
+    model = GPy.models.BayesianGPLVM(X, input_dim, kernel=kernel, num_inducing=7)
     model.optimize(messages=True, max_iters=5e3, optimizer='scg')
 
     return model, X_mean
