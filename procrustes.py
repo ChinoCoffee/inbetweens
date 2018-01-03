@@ -23,7 +23,8 @@ class RotoppPoint(object):
 
     @staticmethod
     def rotopp2coords(data):
-        return np.append(data, [data[0]], axis=0)
+        xycoords = data.reshape(len(data) // 2, 2)
+        return np.append(xycoords, [xycoords[0]], axis=0)
 
     @classmethod
     def from_coords(cls, coords):
@@ -50,9 +51,9 @@ def procrustes_analyze(splines):
     gpa.setMat(data)
     gpa.solve()
 
-    normalized_spline = gpa.getNormalizedSpline()
-    print(normalized_spline.shape, normalized_spline)
+    normalized_splines = gpa.getNormalizedSpline()
+    print(normalized_splines.shape, normalized_splines)
 
-    normalized_coords = RotoppPoint.rotopp2coords(normalized_spline)
+    result = np.array([RotoppPoint.rotopp2coords(coords) for coords in normalized_splines])
 
-    return normalized_coords, gpa
+    return result, gpa
