@@ -11,6 +11,7 @@ from svg.path import parse_path
 
 from utils import Curve, UIController, normalize_coords
 from manifold import calculate_manifold
+from procrustes import procrustes_analyze
 
 
 Path = mpath.Path
@@ -64,12 +65,16 @@ def prepare_coords(filename, scale=0.02):
         return result
 
 
+print("reading svg file...")
 test_coords = prepare_coords('test_curves.svg')
+print("procrustes analysis start.")
+normalized_coords, analyzer = procrustes_analyze(test_coords)
+print("result shape", normalized_coords.shape)
 
 
 # Calculate
 X = []
-for xycoords in np.copy(test_coords):
+for xycoords in np.copy(normalized_coords):
     X.append(xycoords.flatten())
     X.append(xycoords.flatten())   # [FIXME] too small samples?
 
@@ -114,6 +119,7 @@ def draw(event, drawing_state):
             ax.plot(event.xdata, event.ydata, "ro")
 
         # unknown value -> confidence?
+        #print([event.xdata, event.ydata])
         new_curve, unknown_value = model.predict(np.array([[event.xdata, event.ydata]]))
         new_curve = new_curve[0]
         new_curve += X_mean

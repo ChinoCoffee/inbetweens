@@ -1,11 +1,7 @@
 import numpy as np
 import GPy
 
-from transformations import GeneralizedProcrustesAnalyzer as GPA
-
-
 """
-
 RBF kernel
 
   cov( x_i, x_j | alpha, beta ) = alpha * exp ( -0.5 * beta * || x_i - x_j || ^ 2 )
@@ -36,17 +32,10 @@ def calculate_manifold(data):
     X_mean = X.mean(0)
     X -= X_mean
 
-    """
-    gpa = GPA('hoge')
-    gpa.setMat(X)
-    gpa.solve()
-    X = gpa.normalizedSpline()
-    """
-
     input_dim = 2   # How many latent dimensions to use
 
     kernel = GPy.kern.RBF(input_dim)
-    model = GPy.models.BayesianGPLVM(X, input_dim, kernel=kernel, num_inducing=5)
+    model = GPy.models.BayesianGPLVM(X, input_dim, kernel=kernel, num_inducing=6)
     model.optimize(messages=True, max_iters=5e3, optimizer='scg')
 
-    return model, X_mean   #, gpa
+    return model, X_mean

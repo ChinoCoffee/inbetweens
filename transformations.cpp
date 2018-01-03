@@ -270,42 +270,40 @@ Eigen::MatrixXd getEigenKeyframes() {
 
 struct GeneralizedProcrustesAnalyzer {
 
-  GeneralizedProcrustesAnalyzer(const std::string &name) : name(name) { }
+  GeneralizedProcrustesAnalyzer() { }
 
-  void setName(const std::string &name_) { name = name_; }
-  const std::string &getName() const { return name; }
+  Eigen::MatrixXd inputMat;
+  Eigen::MatrixXd normalizedMat;
+  Eigen::MatrixXd sparseT;
+  Eigen::VectorXd sparseR;
+
+  void setMat(const Eigen::MatrixXd &mat_) { inputMat = mat_; }
+
+  Eigen::MatrixXd &getNormalizedSpline() { return normalizedMat; }
+  Eigen::VectorXd &getRotations() { return sparseR; }
+  Eigen::MatrixXd &getTranslations() { return sparseT; }
 
   void solve() {
-    Eigen::MatrixXd Y = getEigenKeyframes();
-    shared_ptr<RigidMotionEstimator> motionEstimator(new RigidMotionEstimator(Y));
-    Y = motionEstimator->CalcNormalisedY();
+    shared_ptr<RigidMotionEstimator> motionEstimator(new RigidMotionEstimator(inputMat));   // inputMat is Y
+    normalizedMat = motionEstimator->CalcNormalisedY();
 
-    Eigen::MatrixXd sparseT = motionEstimator->translations();
-    Eigen::VectorXd sparstR = motionEstimator->rotations();
+    sparseT = motionEstimator->translations();
+    sparseR = motionEstimator->rotations();
   };
 
-  void setMat(const Eigen::Matrix2d &mat_) { mat = mat_; }
-  Eigen::Matrix2d &getMat() { return mat; }
-
-  std::string name;
-  Eigen::Matrix2d mat = Eigen::Matrix2d::Identity();
 };
 
 
 
 PYBIND11_MODULE(transformations, m) {
-
   py::class_<GeneralizedProcrustesAnalyzer>(m, "GeneralizedProcrustesAnalyzer")
-    .def(py::init<const std::string &>())
-    .def("setName", &GeneralizedProcrustesAnalyzer::setName)
-    .def("getName", &GeneralizedProcrustesAnalyzer::getName)
+    .def(py::init<>())
     .def("setMat", &GeneralizedProcrustesAnalyzer::setMat)
-    .def("getMat", &GeneralizedProcrustesAnalyzer::getMat);
+    .def("getNormalizedSpline", &GeneralizedProcrustesAnalyzer::getNormalizedSpline)
+    .def("getRotations", &GeneralizedProcrustesAnalyzer::getRotations)
+    .def("getTranslations", &GeneralizedProcrustesAnalyzer::getTranslations)
+    .def("solve", &GeneralizedProcrustesAnalyzer::solve)
+    ;
 
   m.doc() = "generalized procrustes analysis module"; // optional module docstring
-
-  m.attr("the_answer") = 42;
-  py::object world = py::cast("World");
-  m.attr("what") = world;
-
 }
