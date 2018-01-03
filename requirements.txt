@@ -1,0 +1,6 @@
+beautifulsoup4==4.6.0
+GPy==1.8.5
+matplotlib==2.1.0
+numpy==1.13.3
+scipy==1.0.0
+svg.path==2.2
