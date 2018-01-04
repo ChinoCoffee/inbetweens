@@ -10,7 +10,7 @@
 BSD like license で配布されている [Roto++](https://github.com/vinben/Rotopp) の generalized Procrustes analysis (RigidMotionEstimator) の C++ コードを使用しています。
 
 
-### インストール (WIP)
+### 環境準備 (WIP)
 
 `virtualenv` 環境を用意し、必要なライブラリをインストールします。
 
@@ -18,7 +18,7 @@ BSD like license で配布されている [Roto++](https://github.com/vinben/Rot
 $ pip install -r requirements.txt
 ```
 
-[pybind11](https://github.com/pybind/pybind11) をインストールし generalized Procrustes analysis 用モジュールをコンパイルします。ライブラリのパス等は適宜修正してください。
+[pybind11](https://github.com/pybind/pybind11) と [Ceres Solver](http://ceres-solver.org/) をインストールし generalized Procrustes analysis 用モジュールをコンパイルします。ライブラリのパス等は適宜修正してください。
 
 ```sh
 $ ./build.sh
